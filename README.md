@@ -53,6 +53,7 @@ This repo is a **comprehensive knowledge base** designed to be loaded into AI ag
 | 🔧 **DevOps** | CI/CD, containers, K8s, observability, release management |
 | 🔒 **Security** | Scanning, secrets, hardening, network security, incident response |
 | ☁️ **Infrastructure** | AWS, Azure, GCP, servers, networking, databases, storage |
+| 🤖 **AI & Platforms** | Agent infrastructure, local LLM ops, and modern app platforms |
 | 📋 **Compliance** | SOC2, HIPAA, GDPR, PCI-DSS, governance, auditing |
 
 ---
@@ -205,6 +206,12 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [new-relic](devops/observability/new-relic/) | New Relic observability |
 | [alerting-oncall](devops/observability/alerting-oncall/) | Alert rules and on-call rotations |
 
+### AI Engineering
+| Skill | Description |
+|-------|-------------|
+| [agent-observability](devops/ai/agent-observability/) | Tracing, latency, token, and cost telemetry for agents |
+| [agent-evals](devops/ai/agent-evals/) | Automated regression and safety eval suites for agents |
+
 ### Release Management
 | Skill | Description |
 |-------|-------------|
@@ -262,6 +269,12 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [penetration-testing](security/operations/penetration-testing/) | Basic pentesting |
 | [security-automation](security/operations/security-automation/) | Security workflow automation |
 
+### AI Security
+| Skill | Description |
+|-------|-------------|
+| [ai-agent-security](security/ai/ai-agent-security/) | Defend agents against injection, tool abuse, and exfiltration |
+| [llm-app-security](security/ai/llm-app-security/) | Harden LLM app inputs, outputs, and tenant isolation |
+
 </details>
 
 <details>
@@ -279,6 +292,14 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [aws-s3](infrastructure/cloud-aws/aws-s3/) | Object storage |
 | [aws-vpc](infrastructure/cloud-aws/aws-vpc/) | Networking |
 | [aws-iam](infrastructure/cloud-aws/aws-iam/) | Identity and access |
+
+### Cloudflare
+| Skill | Description |
+|-------|-------------|
+| [cloudflare-workers](infrastructure/cloudflare/cloudflare-workers/) | Edge functions and APIs with Wrangler |
+| [cloudflare-pages](infrastructure/cloudflare/cloudflare-pages/) | Static/full-stack deployments with previews |
+| [cloudflare-r2](infrastructure/cloudflare/cloudflare-r2/) | S3-compatible object storage without egress fees |
+| [cloudflare-zero-trust](infrastructure/cloudflare/cloudflare-zero-trust/) | Access policies and private app protection |
 
 ### Azure
 | Skill | Description |
@@ -325,6 +346,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [postgresql](infrastructure/databases/postgresql/) | PostgreSQL admin |
 | [mysql](infrastructure/databases/mysql/) | MySQL/MariaDB |
+| [planetscale](infrastructure/databases/planetscale/) | Branch-based MySQL schema deployments |
 | [mongodb](infrastructure/databases/mongodb/) | MongoDB clusters |
 | [redis](infrastructure/databases/redis/) | Redis caching |
 | [database-backups](infrastructure/databases/database-backups/) | Backup strategies |
@@ -336,6 +358,25 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [object-storage](infrastructure/storage/object-storage/) | S3, MinIO |
 | [nfs-storage](infrastructure/storage/nfs-storage/) | NFS servers |
 | [backup-recovery](infrastructure/storage/backup-recovery/) | Backup with restic |
+
+### Platforms
+| Skill | Description |
+|-------|-------------|
+| [vercel-deployments](infrastructure/platforms/vercel-deployments/) | Preview and production web app deployments |
+| [convex-backend](infrastructure/platforms/convex-backend/) | Realtime managed backend with typed functions |
+| [firebase-app-platform](infrastructure/platforms/firebase-app-platform/) | Firebase auth, data, functions, and hosting |
+
+### Local AI Infrastructure
+| Skill | Description |
+|-------|-------------|
+| [ollama-stack](infrastructure/local-ai/ollama-stack/) | Private local inference stack with Ollama |
+| [mac-mini-llm-lab](infrastructure/local-ai/mac-mini-llm-lab/) | Mac mini setup for always-on local LLM serving |
+| [openclaw-local-mac-mini](infrastructure/local-ai/openclaw-local-mac-mini/) | OpenClaw setup for local development and Mac mini hosting |
+
+### IT Operations
+| Skill | Description |
+|-------|-------------|
+| [startup-it-troubleshooting](infrastructure/it/startup-it-troubleshooting/) | Practical IT troubleshooting for small teams |
 
 </details>
 
