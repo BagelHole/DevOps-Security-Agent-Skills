@@ -200,6 +200,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | Skill | Description |
 |-------|-------------|
 | [prometheus-grafana](devops/observability/prometheus-grafana/) | Metrics and dashboards |
+| [opentelemetry](devops/observability/opentelemetry/) | Vendor-neutral traces, metrics, and logs |
 | [elk-stack](devops/observability/elk-stack/) | Elasticsearch, Logstash, Kibana |
 | [loki-logging](devops/observability/loki-logging/) | Grafana Loki log aggregation |
 | [datadog](devops/observability/datadog/) | Datadog monitoring and APM |
@@ -233,6 +234,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [dast-scanning](security/scanning/dast-scanning/) | OWASP ZAP, Nuclei |
 | [dependency-scanning](security/scanning/dependency-scanning/) | Snyk, Dependabot |
 | [container-scanning](security/scanning/container-scanning/) | Image vulnerability scanning |
+| [sbom-supply-chain](security/scanning/sbom-supply-chain/) | SBOM generation, signing, and provenance verification |
 
 ### Secrets Management
 | Skill | Description |
@@ -292,6 +294,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [aws-s3](infrastructure/cloud-aws/aws-s3/) | Object storage |
 | [aws-vpc](infrastructure/cloud-aws/aws-vpc/) | Networking |
 | [aws-iam](infrastructure/cloud-aws/aws-iam/) | Identity and access |
+| [aws-cost-optimization](infrastructure/cloud-aws/aws-cost-optimization/) | FinOps cost reduction and spend governance |
 
 ### Cloudflare
 | Skill | Description |

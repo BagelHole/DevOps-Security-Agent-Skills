@@ -29,4 +29,4 @@ Harden chatbots and AI features embedded in web and mobile products.
 ## Related Skills
 
 - [ai-agent-security](../ai-agent-security/) - Agent-specific controls
-- [sast-scanning](../scanning/sast-scanning/) - Secure coding checks
+- [sast-scanning](../../scanning/sast-scanning/) - Secure coding checks
