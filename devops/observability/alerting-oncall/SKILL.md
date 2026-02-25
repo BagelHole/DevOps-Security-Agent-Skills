@@ -495,4 +495,4 @@ fatigue_reduction:
 
 - [prometheus-grafana](../prometheus-grafana/) - Monitoring setup
 - [incident-response](../../../security/operations/incident-response/) - Incident handling
-- [runbook-automation](../../../compliance/continuity/runbook-automation/) - Runbook creation
+- [runbook-creation](../../../compliance/continuity/runbook-creation/) - Runbook creation

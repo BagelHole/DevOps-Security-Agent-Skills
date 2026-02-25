@@ -35,4 +35,4 @@ Protect agentic systems from adversarial input and unsafe tool execution.
 ## Related Skills
 
 - [llm-app-security](../llm-app-security/) - Application-layer LLM defenses
-- [threat-modeling](../operations/threat-modeling/) - Structured risk analysis
+- [threat-modeling](../../operations/threat-modeling/) - Structured risk analysis
