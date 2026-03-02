@@ -195,6 +195,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [argocd-gitops](devops/orchestration/argocd-gitops/) | GitOps with ArgoCD |
 | [kustomize](devops/orchestration/kustomize/) | Kubernetes manifest customization |
 | [openshift](devops/orchestration/openshift/) | OpenShift cluster management |
+| [model-serving-kubernetes](devops/orchestration/model-serving-kubernetes/) | KServe and Triton model serving with canary deployments and GPU autoscaling |
 
 ### Observability
 | Skill | Description |
@@ -212,6 +213,9 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [agent-observability](devops/ai/agent-observability/) | Tracing, latency, token, and cost telemetry for agents |
 | [agent-evals](devops/ai/agent-evals/) | Automated regression and safety eval suites for agents |
+| [llm-cost-optimization](devops/ai/llm-cost-optimization/) | Cut LLM API costs with caching, batching, model routing, and self-hosting |
+| [llm-caching](devops/ai/llm-caching/) | Exact and semantic caching layers to reduce API calls by 30–70% |
+| [ai-pipeline-orchestration](devops/ai/ai-pipeline-orchestration/) | Orchestrate RAG ingestion, training, and batch inference with Prefect/Airflow |
 
 ### Release Management
 | Skill | Description |
@@ -276,6 +280,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [ai-agent-security](security/ai/ai-agent-security/) | Defend agents against injection, tool abuse, and exfiltration |
 | [llm-app-security](security/ai/llm-app-security/) | Harden LLM app inputs, outputs, and tenant isolation |
+| [ai-security-hardening](security/ai/ai-security-hardening/) | Harden LLM deployments against prompt injection, model theft, and data exfiltration |
 
 </details>
 
@@ -334,6 +339,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [user-management](infrastructure/servers/user-management/) | Users, groups, sudo |
 | [systemd-services](infrastructure/servers/systemd-services/) | Services and timers |
 | [performance-tuning](infrastructure/servers/performance-tuning/) | System optimization |
+| [gpu-server-management](infrastructure/servers/gpu-server-management/) | NVIDIA GPU driver setup, MIG partitioning, DCGM monitoring for AI workloads |
 
 ### Networking
 | Skill | Description |
@@ -343,6 +349,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [cdn-setup](infrastructure/networking/cdn-setup/) | CloudFront, Cloudflare |
 | [reverse-proxy](infrastructure/networking/reverse-proxy/) | nginx, Traefik |
 | [service-mesh](infrastructure/networking/service-mesh/) | Istio, Linkerd |
+| [llm-gateway](infrastructure/networking/llm-gateway/) | Unified LLM API gateway with routing, rate limiting, virtual keys, and semantic caching |
 
 ### Databases
 | Skill | Description |
@@ -353,6 +360,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [mongodb](infrastructure/databases/mongodb/) | MongoDB clusters |
 | [redis](infrastructure/databases/redis/) | Redis caching |
 | [database-backups](infrastructure/databases/database-backups/) | Backup strategies |
+| [vector-database-ops](infrastructure/databases/vector-database-ops/) | Qdrant, Weaviate, and pgvector for production AI search and RAG workloads |
 
 ### Storage
 | Skill | Description |
@@ -375,6 +383,10 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [ollama-stack](infrastructure/local-ai/ollama-stack/) | Private local inference stack with Ollama |
 | [mac-mini-llm-lab](infrastructure/local-ai/mac-mini-llm-lab/) | Mac mini setup for always-on local LLM serving |
 | [openclaw-local-mac-mini](infrastructure/local-ai/openclaw-local-mac-mini/) | OpenClaw setup for local development and Mac mini hosting |
+| [vllm-server](infrastructure/local-ai/vllm-server/) | High-throughput LLM serving with vLLM — PagedAttention, tensor parallelism, OpenAI API |
+| [llm-inference-scaling](infrastructure/local-ai/llm-inference-scaling/) | Auto-scale LLM inference clusters on Kubernetes with KEDA and GPU-aware scheduling |
+| [rag-infrastructure](infrastructure/local-ai/rag-infrastructure/) | Production RAG with vector stores, hybrid search, embedding pipelines, and reranking |
+| [llm-fine-tuning](infrastructure/local-ai/llm-fine-tuning/) | QLoRA and full fine-tuning with Axolotl, DeepSpeed, and DPO alignment on GPU clusters |
 
 ### IT Operations
 | Skill | Description |
