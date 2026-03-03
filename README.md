@@ -216,6 +216,10 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [llm-cost-optimization](devops/ai/llm-cost-optimization/) | Cut LLM API costs with caching, batching, model routing, and self-hosting |
 | [llm-caching](devops/ai/llm-caching/) | Exact and semantic caching layers to reduce API calls by 30–70% |
 | [ai-pipeline-orchestration](devops/ai/ai-pipeline-orchestration/) | Orchestrate RAG ingestion, training, and batch inference with Prefect/Airflow |
+| [llmops-platform-engineering](devops/ai/llmops-platform-engineering/) | Build enterprise LLMOps platforms with evaluation gates, promotions, rollback, and governance |
+| [model-registry-governance](devops/ai/model-registry-governance/) | Define model metadata, approvals, lifecycle policy, and auditable promotion controls |
+| [rag-observability-evals](devops/ai/rag-observability-evals/) | Measure retrieval quality, groundedness, hallucination risk, and RAG regressions continuously |
+| [ai-sre-incident-response](devops/ai/ai-sre-incident-response/) | AI-specific SRE playbooks for model outages, quality regressions, safety incidents, and spend spikes |
 
 ### Release Management
 | Skill | Description |
@@ -281,6 +285,9 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [ai-agent-security](security/ai/ai-agent-security/) | Defend agents against injection, tool abuse, and exfiltration |
 | [llm-app-security](security/ai/llm-app-security/) | Harden LLM app inputs, outputs, and tenant isolation |
 | [ai-security-hardening](security/ai/ai-security-hardening/) | Harden LLM deployments against prompt injection, model theft, and data exfiltration |
+| [prompt-injection-defense](security/ai/prompt-injection-defense/) | Defend against direct/indirect prompt injection with isolation, tool controls, and output validation |
+| [ai-red-teaming](security/ai/ai-red-teaming/) | Run adversarial AI red team programs for jailbreaks, exfiltration, and tool abuse resilience |
+| [model-supply-chain-security](security/ai/model-supply-chain-security/) | Protect model artifacts with signing, provenance, SBOM workflows, and trusted promotion policies |
 
 </details>
 
@@ -350,6 +357,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [reverse-proxy](infrastructure/networking/reverse-proxy/) | nginx, Traefik |
 | [service-mesh](infrastructure/networking/service-mesh/) | Istio, Linkerd |
 | [llm-gateway](infrastructure/networking/llm-gateway/) | Unified LLM API gateway with routing, rate limiting, virtual keys, and semantic caching |
+| [ai-inference-service-mesh](infrastructure/networking/ai-inference-service-mesh/) | Service mesh patterns for mTLS, canary inference routing, and resilient AI east-west traffic |
 
 ### Databases
 | Skill | Description |
@@ -387,6 +395,8 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [llm-inference-scaling](infrastructure/local-ai/llm-inference-scaling/) | Auto-scale LLM inference clusters on Kubernetes with KEDA and GPU-aware scheduling |
 | [rag-infrastructure](infrastructure/local-ai/rag-infrastructure/) | Production RAG with vector stores, hybrid search, embedding pipelines, and reranking |
 | [llm-fine-tuning](infrastructure/local-ai/llm-fine-tuning/) | QLoRA and full fine-tuning with Axolotl, DeepSpeed, and DPO alignment on GPU clusters |
+| [gpu-kubernetes-operations](infrastructure/local-ai/gpu-kubernetes-operations/) | Run GPU Kubernetes clusters with MIG, autoscaling, node health checks, and AI cost controls |
+| [multi-tenant-llm-hosting](infrastructure/local-ai/multi-tenant-llm-hosting/) | Secure multi-tenant LLM hosting with quotas, isolation boundaries, and per-tenant billing controls |
 
 ### IT Operations
 | Skill | Description |
