@@ -261,6 +261,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [container-hardening](security/hardening/container-hardening/) | Secure Docker/K8s configs |
 | [kubernetes-hardening](security/hardening/kubernetes-hardening/) | K8s security contexts and policies |
 | [cis-benchmarks](security/hardening/cis-benchmarks/) | CIS benchmark auditing |
+| [openclaw-deployment-hardening](security/hardening/openclaw-deployment-hardening/) | OpenClaw CI/CD, container, and runtime hardening guardrails |
 
 ### Network Security
 | Skill | Description |
@@ -391,6 +392,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [ollama-stack](infrastructure/local-ai/ollama-stack/) | Private local inference stack with Ollama |
 | [mac-mini-llm-lab](infrastructure/local-ai/mac-mini-llm-lab/) | Mac mini setup for always-on local LLM serving |
 | [openclaw-local-mac-mini](infrastructure/local-ai/openclaw-local-mac-mini/) | OpenClaw setup for local development and Mac mini hosting |
+| [openclaw-security-hardening](infrastructure/local-ai/openclaw-security-hardening/) | OpenClaw host, auth, secrets, and network hardening for self-hosted deployments |
 | [vllm-server](infrastructure/local-ai/vllm-server/) | High-throughput LLM serving with vLLM — PagedAttention, tensor parallelism, OpenAI API |
 | [llm-inference-scaling](infrastructure/local-ai/llm-inference-scaling/) | Auto-scale LLM inference clusters on Kubernetes with KEDA and GPU-aware scheduling |
 | [rag-infrastructure](infrastructure/local-ai/rag-infrastructure/) | Production RAG with vector stores, hybrid search, embedding pipelines, and reranking |
