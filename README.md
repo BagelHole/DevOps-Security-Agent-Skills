@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Agent Skills](https://img.shields.io/badge/Format-Agent%20Skills-blueviolet.svg)](https://agentskills.io)
+[![skills.sh](https://img.shields.io/badge/skills.sh-cli-000000.svg)](https://skills.sh/docs)
 
 <br />
 
@@ -46,7 +47,7 @@ You're a **solo founder**, **indie hacker**, or **one-person DevOps team**. You 
 
 ## 🚀 The Solution
 
-This repo is a **comprehensive knowledge base** designed to be loaded into AI agents. It's your **DevOps second brain** — battle-tested scripts, production-ready configs, and expert knowledge organized using the [Agent Skills](https://agentskills.io) format:
+This repo is a **comprehensive knowledge base** designed to be loaded into AI agents. It's your **DevOps second brain** — battle-tested scripts, production-ready configs, and expert knowledge organized using the [Agent Skills](https://agentskills.io) format. You can install them with the [skills.sh](https://skills.sh/docs) CLI (`npx skills add`, [CLI docs](https://skills.sh/docs/cli), [FAQ](https://skills.sh/docs/faq)) alongside cloning this repository:
 
 | Domain | What You Get |
 |--------|--------------|
@@ -116,7 +117,30 @@ Each `SKILL.md` has YAML frontmatter (name + description) that agents load at st
 
 ## 🏃 Quick Start
 
-### 1. Download the Skills
+### 1. Install with the skills CLI ([skills.sh](https://skills.sh/docs))
+
+The [skills](https://github.com/vercel-labs/skills) CLI discovers every `SKILL.md` in this repository (including nested paths) and can symlink or copy them into your agent’s skills directory—**Cursor**, **Claude Code**, **Codex**, **OpenCode**, and [many others](https://github.com/vercel-labs/skills#supported-agents) are supported. See the [CLI reference](https://skills.sh/docs/cli) and [FAQ](https://skills.sh/docs/faq) for details.
+
+```bash
+# Install from GitHub (use your fork’s owner/repo if different)
+npx skills add bagelhole/DevOps-Security-Agent-Skills
+
+# List skills without installing
+npx skills add bagelhole/DevOps-Security-Agent-Skills --list
+
+# Install specific skills to Cursor, non-interactively
+npx skills add bagelhole/DevOps-Security-Agent-Skills --skill kubernetes-ops --skill hashicorp-vault -a cursor -y
+
+# Global install (~/) instead of the current project
+npx skills add bagelhole/DevOps-Security-Agent-Skills -g -y
+
+# Install a single skill by path in the repo
+npx skills add https://github.com/bagelhole/DevOps-Security-Agent-Skills/tree/main/devops/orchestration/kubernetes-ops
+```
+
+You can also install from a **local clone** of this repo: `npx skills add . --list` from the repository root.
+
+### 2. Download the Skills (clone or submodule)
 
 ```bash
 # Clone to your skills directory
@@ -126,7 +150,7 @@ git clone https://github.com/bagelhole/DevOps-Security-Agent-Skills.git ~/.skill
 git submodule add https://github.com/bagelhole/DevOps-Security-Agent-Skills.git .skills/devops-security
 ```
 
-### 2. Integrate with Your Agent
+### 3. Integrate with Your Agent
 
 **Filesystem-based agents** (Cursor, Claude with computer use, Cline, etc.) are the easiest — the agent can read skills directly:
 
@@ -152,7 +176,7 @@ skills-ref to-prompt ~/.skills/devops-security/devops/ci-cd/*
 # </available_skills>
 ```
 
-### 3. Validate Skills (Optional)
+### 4. Validate Skills (Optional)
 
 ```bash
 # Check skill format is correct

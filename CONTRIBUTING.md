@@ -223,11 +223,17 @@ compliance/
    skills-ref validate ./path/to/your-skill
    ```
 
-2. **Test your instructions** - ensure they work as documented
+2. **Confirm [skills.sh](https://skills.sh/docs) CLI discovery** (recommended): from the repository root, your skill should appear when listing skills. This matches how users install via `npx skills add` ([CLI reference](https://skills.sh/docs/cli)). Telemetry can be disabled per the [FAQ](https://skills.sh/docs/faq).
+   ```bash
+   DISABLE_TELEMETRY=1 npx skills add . --list
+   ```
+   On Windows PowerShell: `$env:DISABLE_TELEMETRY = "1"; npx skills add . --list`
 
-3. **Check for duplicates** - ensure a similar skill doesn't already exist
+3. **Test your instructions** - ensure they work as documented
 
-4. **Review the style** - match the conventions of existing skills
+4. **Check for duplicates** - ensure a similar skill doesn't already exist
+
+5. **Review the style** - match the conventions of existing skills
 
 ### Pull Request Guidelines
 
