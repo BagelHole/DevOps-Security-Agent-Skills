@@ -9,68 +9,471 @@ metadata:
 
 # Access Review
 
-Implement periodic access review processes.
+Implement periodic access review processes for AWS IAM, GitHub, Okta, and other identity providers, including automated reporting, certification workflows, and unused permission detection.
 
-## Review Process
+## When to Use
+
+- Conducting quarterly or annual access reviews for compliance (SOC 2, HIPAA, PCI DSS, ISO 27001)
+- Identifying and removing stale accounts and unused credentials
+- Certifying that current access levels match job responsibilities
+- Detecting excessive privileges and dormant service accounts
+- Generating evidence for auditor requests on access governance
+
+## Access Review Process
 
 ```yaml
 access_review_workflow:
-  1_extract:
-    - Pull access data from systems
-    - Generate access report
-    
-  2_review:
-    - Manager certification
-    - Risk-based prioritization
-    - Decision documentation
-    
-  3_action:
-    - Revoke unnecessary access
-    - Update exceptions
-    - Document decisions
-    
-  4_report:
-    - Compliance metrics
-    - Remediation tracking
+  1_scope:
+    actions:
+      - Define systems in scope for the review cycle
+      - Identify review owners (managers, system owners)
+      - Set review timeline and deadlines
+      - Generate access inventory from all identity sources
+    frequency:
+      privileged_access: Quarterly
+      standard_access: Semi-annually
+      service_accounts: Quarterly
+      api_keys: Monthly
+
+  2_extract:
+    actions:
+      - Pull current access data from all systems
+      - Correlate identities across platforms (SSO mapping)
+      - Enrich with last login and activity data
+      - Flag accounts for review (inactive, over-privileged, orphaned)
+
+  3_review:
+    actions:
+      - Assign review items to appropriate managers
+      - Manager certifies each user's access (approve/revoke/modify)
+      - Risk-based prioritization (privileged users reviewed first)
+      - Escalate non-responses after deadline
+    decisions:
+      approve: "Access is appropriate for current role"
+      modify: "Access needs adjustment (reduce/change scope)"
+      revoke: "Access is no longer needed"
+
+  4_remediate:
+    actions:
+      - Revoke access flagged for removal
+      - Modify access as directed by reviewers
+      - Document exceptions with justification
+      - Confirm changes with system owners
+    sla:
+      revocations: "Complete within 5 business days of decision"
+      modifications: "Complete within 10 business days"
+      exceptions: "Approved by security team, documented, time-limited"
+
+  5_report:
+    actions:
+      - Generate completion metrics (% reviewed, % on time)
+      - Document all decisions and actions taken
+      - Archive evidence for compliance audits
+      - Identify process improvements for next cycle
 ```
 
-## AWS IAM Review
+## AWS IAM Access Review Scripts
 
 ```bash
+#!/usr/bin/env bash
+# aws-iam-review.sh - Comprehensive IAM access review report
+
+OUTPUT_DIR="./access-review/$(date +%Y-%m)"
+mkdir -p "$OUTPUT_DIR"
+
+echo "=== AWS IAM Access Review ==="
+
 # Generate credential report
-aws iam generate-credential-report
-aws iam get-credential-report --output text --query Content | base64 -d
+aws iam generate-credential-report > /dev/null
+sleep 10
+aws iam get-credential-report --output text --query Content | \
+  base64 -d > "$OUTPUT_DIR/credential-report.csv"
 
-# Find inactive users
-aws iam list-users | jq -r '.Users[] | select(.PasswordLastUsed < "2024-01-01") | .UserName'
+echo "--- Users Without MFA ---"
+aws iam get-credential-report --output text --query Content | base64 -d | \
+  awk -F, 'NR>1 && $4=="true" && $8=="false" {print $1}' | \
+  tee "$OUTPUT_DIR/users-without-mfa.txt"
 
-# List unused access keys
-aws iam get-access-key-last-used --access-key-id AKIAXXXXXXXX
+echo "--- Inactive Users (90+ days) ---"
+THRESHOLD=$(date -d '90 days ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -v-90d +%Y-%m-%dT%H:%M:%S)
+aws iam get-credential-report --output text --query Content | base64 -d | \
+  awk -F, -v t="$THRESHOLD" 'NR>1 && $5!="N/A" && $5!="no_information" && $5<t {
+    print $1","$5
+  }' | tee "$OUTPUT_DIR/inactive-users.csv"
+
+echo "--- Stale Access Keys (90+ days unused) ---"
+for user in $(aws iam list-users --query 'Users[*].UserName' --output text); do
+  for key_id in $(aws iam list-access-keys --user-name "$user" \
+    --query 'AccessKeyMetadata[?Status==`Active`].AccessKeyId' --output text); do
+    last_used=$(aws iam get-access-key-last-used --access-key-id "$key_id" \
+      --query 'AccessKeyLastUsed.LastUsedDate' --output text)
+    if [ "$last_used" = "None" ] || [ "$last_used" \< "$THRESHOLD" ]; then
+      echo "$user,$key_id,$last_used"
+    fi
+  done
+done | tee "$OUTPUT_DIR/stale-access-keys.csv"
+
+echo "--- Users With Admin Policies ---"
+for user in $(aws iam list-users --query 'Users[*].UserName' --output text); do
+  policies=$(aws iam list-attached-user-policies --user-name "$user" \
+    --query 'AttachedPolicies[*].PolicyName' --output text)
+  if echo "$policies" | grep -qi "admin\|fullaccess"; then
+    groups=$(aws iam list-groups-for-user --user-name "$user" \
+      --query 'Groups[*].GroupName' --output text)
+    echo "$user|policies:$policies|groups:$groups"
+  fi
+done | tee "$OUTPUT_DIR/admin-users.txt"
+
+echo "--- IAM Roles With Cross-Account Trust ---"
+for role in $(aws iam list-roles --query 'Roles[*].RoleName' --output text); do
+  trust=$(aws iam get-role --role-name "$role" \
+    --query 'Role.AssumeRolePolicyDocument' --output json 2>/dev/null)
+  if echo "$trust" | grep -q '"AWS"' && echo "$trust" | grep -qv "$(aws sts get-caller-identity --query Account --output text)"; then
+    echo "$role: $trust" | jq -c '.Statement[].Principal'
+  fi
+done | tee "$OUTPUT_DIR/cross-account-roles.txt"
+
+echo "--- Service Accounts (Programmatic Only) ---"
+aws iam get-credential-report --output text --query Content | base64 -d | \
+  awk -F, 'NR>1 && $4=="false" && $9!="N/A" {print $1","$11","$16}' | \
+  tee "$OUTPUT_DIR/service-accounts.csv"
+
+echo "Report generated in $OUTPUT_DIR"
 ```
 
-## Automation
+## GitHub Access Review
+
+```bash
+#!/usr/bin/env bash
+# github-access-review.sh - GitHub organization access audit
+
+ORG="your-org"
+OUTPUT_DIR="./access-review/github/$(date +%Y-%m)"
+mkdir -p "$OUTPUT_DIR"
+
+echo "=== GitHub Organization Access Review ==="
+
+echo "--- Organization Members ---"
+gh api orgs/$ORG/members --paginate \
+  --jq '.[] | [.login, .site_admin] | @csv' \
+  > "$OUTPUT_DIR/org-members.csv"
+
+echo "--- Organization Owners ---"
+gh api "orgs/$ORG/members?role=admin" --paginate \
+  --jq '.[] | .login' \
+  > "$OUTPUT_DIR/org-owners.txt"
+
+echo "--- Outside Collaborators ---"
+gh api orgs/$ORG/outside_collaborators --paginate \
+  --jq '.[] | .login' \
+  > "$OUTPUT_DIR/outside-collaborators.txt"
+
+echo "--- Repository Access Per Repo ---"
+for repo in $(gh repo list $ORG --json name -q '.[].name' --limit 500); do
+  echo "Repo: $repo"
+  gh api "repos/$ORG/$repo/collaborators" --paginate \
+    --jq '.[] | [.login, .role_name] | @csv' \
+    > "$OUTPUT_DIR/repo-$repo-access.csv" 2>/dev/null
+done
+
+echo "--- Team Memberships ---"
+for team in $(gh api orgs/$ORG/teams --paginate --jq '.[].slug'); do
+  echo "Team: $team"
+  gh api "orgs/$ORG/teams/$team/members" --paginate \
+    --jq '.[] | .login' \
+    > "$OUTPUT_DIR/team-$team-members.txt"
+done
+
+echo "--- Pending Invitations ---"
+gh api orgs/$ORG/invitations --paginate \
+  --jq '.[] | [.login, .email, .role, .created_at] | @csv' \
+  > "$OUTPUT_DIR/pending-invitations.csv"
+
+echo "--- Deploy Keys ---"
+for repo in $(gh repo list $ORG --json name -q '.[].name' --limit 500); do
+  keys=$(gh api "repos/$ORG/$repo/keys" --jq '.[].title' 2>/dev/null)
+  if [ -n "$keys" ]; then
+    echo "$repo: $keys"
+  fi
+done > "$OUTPUT_DIR/deploy-keys.txt"
+
+echo "--- Branch Protection Rules ---"
+for repo in $(gh repo list $ORG --json name -q '.[].name' --limit 500); do
+  protection=$(gh api "repos/$ORG/$repo/branches/main/protection" 2>/dev/null)
+  if [ $? -eq 0 ]; then
+    echo "$repo: protected"
+    echo "$protection" | jq '{required_reviews: .required_pull_request_reviews.required_approving_review_count, dismiss_stale: .required_pull_request_reviews.dismiss_stale_reviews}' \
+      > "$OUTPUT_DIR/branch-protection-$repo.json"
+  else
+    echo "$repo: NOT protected" >> "$OUTPUT_DIR/unprotected-repos.txt"
+  fi
+done
+
+echo "Report generated in $OUTPUT_DIR"
+```
+
+## Okta Access Review
+
+```bash
+#!/usr/bin/env bash
+# okta-access-review.sh - Okta user and application access audit
+# Requires OKTA_DOMAIN and OKTA_API_TOKEN environment variables
+
+OUTPUT_DIR="./access-review/okta/$(date +%Y-%m)"
+mkdir -p "$OUTPUT_DIR"
+BASE_URL="https://${OKTA_DOMAIN}/api/v1"
+
+echo "=== Okta Access Review ==="
+
+echo "--- Active Users ---"
+curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+  "$BASE_URL/users?filter=status+eq+%22ACTIVE%22&limit=200" | \
+  jq -r '.[] | [.profile.email, .profile.firstName, .profile.lastName, .lastLogin, .created] | @csv' \
+  > "$OUTPUT_DIR/active-users.csv"
+
+echo "--- Suspended/Deprovisioned Users ---"
+for status in SUSPENDED DEPROVISIONED; do
+  curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+    "$BASE_URL/users?filter=status+eq+%22$status%22&limit=200" | \
+    jq -r '.[] | [.profile.email, .status, .statusChanged] | @csv'
+done > "$OUTPUT_DIR/inactive-users.csv"
+
+echo "--- Users Without MFA Enrolled ---"
+curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+  "$BASE_URL/users?limit=200" | \
+  jq -r '.[] | .id' | while read -r uid; do
+    factors=$(curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+      "$BASE_URL/users/$uid/factors" | jq 'length')
+    if [ "$factors" -eq 0 ]; then
+      curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+        "$BASE_URL/users/$uid" | jq -r '.profile.email'
+    fi
+  done > "$OUTPUT_DIR/users-without-mfa.txt"
+
+echo "--- Application Assignments ---"
+curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+  "$BASE_URL/apps?limit=200" | \
+  jq -r '.[] | [.id, .label, .status] | @csv' | while IFS=, read -r app_id app_name status; do
+    echo "App: $app_name"
+    curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+      "$BASE_URL/apps/$app_id/users?limit=200" | \
+      jq -r '.[] | [.credentials.userName // .profile.email, .status] | @csv'
+  done > "$OUTPUT_DIR/app-assignments.csv"
+
+echo "--- Admin Role Assignments ---"
+curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+  "$BASE_URL/users?limit=200" | \
+  jq -r '.[] | .id' | while read -r uid; do
+    roles=$(curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+      "$BASE_URL/users/$uid/roles" | jq -r '.[].type' 2>/dev/null)
+    if [ -n "$roles" ]; then
+      email=$(curl -s -H "Authorization: SSWS $OKTA_API_TOKEN" \
+        "$BASE_URL/users/$uid" | jq -r '.profile.email')
+      echo "$email: $roles"
+    fi
+  done > "$OUTPUT_DIR/admin-roles.txt"
+
+echo "Report generated in $OUTPUT_DIR"
+```
+
+## Unused Permission Detection
 
 ```python
-def generate_access_report():
-    users = get_all_users()
-    report = []
-    
+"""
+Detect unused IAM permissions using CloudTrail and IAM Access Analyzer.
+Generates recommendations for right-sizing access.
+"""
+import boto3
+import json
+import time
+from datetime import datetime, timedelta, timezone
+
+
+def analyze_iam_usage(days_lookback=90):
+    """Analyze IAM user and role activity against granted permissions."""
+    iam = boto3.client("iam")
+
+    report = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "lookback_days": days_lookback,
+        "findings": [],
+    }
+
+    users = iam.list_users()["Users"]
     for user in users:
-        report.append({
-            'user': user.email,
-            'roles': user.roles,
-            'last_login': user.last_login,
-            'manager': user.manager,
-            'review_status': 'pending'
-        })
-    
+        username = user["UserName"]
+
+        # Get service last accessed data
+        job_id = iam.generate_service_last_accessed_details(
+            Arn=user["Arn"]
+        )["JobId"]
+
+        while True:
+            result = iam.get_service_last_accessed_details(JobId=job_id)
+            if result["JobStatus"] == "COMPLETED":
+                break
+            time.sleep(2)
+
+        threshold = datetime.now(timezone.utc) - timedelta(days=days_lookback)
+        unused_services = []
+
+        for service in result["ServicesLastAccessed"]:
+            last_accessed = service.get("LastAuthenticated")
+            if last_accessed is None or last_accessed < threshold:
+                unused_services.append({
+                    "service": service["ServiceNamespace"],
+                    "last_accessed": str(last_accessed) if last_accessed else "Never",
+                })
+
+        if unused_services:
+            report["findings"].append({
+                "type": "unused_permissions",
+                "user": username,
+                "arn": user["Arn"],
+                "unused_service_count": len(unused_services),
+                "unused_services": unused_services[:10],
+                "recommendation": "Review and remove unused service permissions",
+            })
+
     return report
+
+
+def detect_overprivileged_roles():
+    """Use IAM Access Analyzer to find overprivileged roles."""
+    analyzer = boto3.client("accessanalyzer")
+
+    findings = analyzer.list_findings(
+        analyzerArn="arn:aws:access-analyzer:us-east-1:123456789012:analyzer/org-analyzer",
+        filter={
+            "status": {"eq": ["ACTIVE"]},
+            "resourceType": {"eq": ["AWS::IAM::Role"]},
+        },
+    )
+
+    return [
+        {
+            "resource": f["resource"],
+            "resource_type": f["resourceType"],
+            "condition": f.get("condition", {}),
+            "principal": f.get("principal", {}),
+            "action": f.get("action", []),
+            "created_at": str(f["createdAt"]),
+        }
+        for f in findings.get("findings", [])
+    ]
+```
+
+## Certification Workflow Automation
+
+```yaml
+# GitHub Actions - Automated access review reminder and tracking
+name: Quarterly Access Review
+on:
+  schedule:
+    - cron: '0 9 1 1,4,7,10 *'  # First day of each quarter
+  workflow_dispatch:
+
+jobs:
+  generate-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate access reports
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AUDIT_AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AUDIT_AWS_SECRET }}
+          OKTA_DOMAIN: ${{ secrets.OKTA_DOMAIN }}
+          OKTA_API_TOKEN: ${{ secrets.OKTA_API_TOKEN }}
+        run: |
+          bash scripts/aws-iam-review.sh
+          bash scripts/github-access-review.sh
+          bash scripts/okta-access-review.sh
+
+      - name: Create review issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          QUARTER="Q$(( ($(date +%-m) - 1) / 3 + 1 )) $(date +%Y)"
+          MFA_MISSING=$(wc -l < access-review/$(date +%Y-%m)/users-without-mfa.txt)
+          INACTIVE=$(wc -l < access-review/$(date +%Y-%m)/inactive-users.csv)
+          STALE_KEYS=$(wc -l < access-review/$(date +%Y-%m)/stale-access-keys.csv)
+
+          gh issue create \
+            --title "Access Review - $QUARTER" \
+            --label "compliance,access-review" \
+            --body "## Quarterly Access Review - $QUARTER
+
+          ### Summary
+          - Users without MFA: **$MFA_MISSING**
+          - Inactive users (90+ days): **$INACTIVE**
+          - Stale access keys: **$STALE_KEYS**
+
+          ### Required Actions
+          - [ ] Review and disable inactive users
+          - [ ] Enforce MFA for non-compliant users
+          - [ ] Rotate or deactivate stale access keys
+          - [ ] Review admin/privileged access assignments
+          - [ ] Review outside collaborators on GitHub
+          - [ ] Certify remaining access is appropriate
+          - [ ] Document exceptions with justification
+
+          ### Deadline
+          Complete within 30 days."
+
+      - name: Upload reports as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: access-review-reports
+          path: access-review/
+          retention-days: 365
+```
+
+## Access Review Checklist
+
+```yaml
+access_review_checklist:
+  preparation:
+    - [ ] Define scope (systems, user populations, review period)
+    - [ ] Assign review owners for each system
+    - [ ] Extract current access data from all identity sources
+    - [ ] Correlate identities across platforms via SSO mapping
+    - [ ] Generate review packages for each manager
+
+  execution:
+    - [ ] Managers notified with review assignments and deadline
+    - [ ] Privileged access reviewed first (admin, root, service accounts)
+    - [ ] Each user's access certified (approve, modify, or revoke)
+    - [ ] Inactive accounts flagged for disable/removal
+    - [ ] Stale credentials (keys, tokens) flagged for rotation
+    - [ ] Outside collaborators and contractors verified
+    - [ ] Service account ownership confirmed
+
+  remediation:
+    - [ ] Revocations executed within SLA (5 business days)
+    - [ ] Access modifications completed within SLA (10 business days)
+    - [ ] Exceptions documented with business justification
+    - [ ] Exception approvals recorded from security team
+    - [ ] Changes verified in target systems
+
+  reporting:
+    - [ ] Review completion rate documented (target: 100%)
+    - [ ] Non-response escalations documented
+    - [ ] Remediation actions summarized
+    - [ ] Exception register updated
+    - [ ] Evidence archived for audit (retained 3+ years)
+    - [ ] Metrics compared to prior review cycle
 ```
 
 ## Best Practices
 
-- Quarterly reviews minimum
-- Risk-based frequency
-- Manager attestation
-- Automated revocation
-- Audit trail maintenance
+- Automate access data extraction to eliminate manual data gathering and reduce errors
+- Integrate access review with HR systems to automatically flag accounts for departed employees
+- Use risk-based review frequency: privileged access quarterly, standard access semi-annually
+- Provide managers with clear context: show last login date, permissions, and role to inform decisions
+- Set firm deadlines with escalation for non-response (no certification = automatic revocation)
+- Detect and eliminate orphaned accounts from contractors, former employees, and decommissioned services
+- Review service accounts and API keys alongside human accounts to prevent credential sprawl
+- Document all exceptions with business justification, approver, and expiration date
+- Track review metrics over time: completion rates, revocation rates, time to remediate
+- Archive all access review evidence for a minimum of 3 years for audit purposes

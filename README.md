@@ -4,16 +4,17 @@
 
 ### Your AI-Powered Second Brain for Infrastructure & Security
 
-*Stop Googling. Start Shipping.*
+*160+ production-ready skills for Claude Code, Cursor, Codex, and every AI agent that reads files.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/Skills-160%2B-orange.svg)](#skill-catalog)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Agent Skills](https://img.shields.io/badge/Format-Agent%20Skills-blueviolet.svg)](https://agentskills.io)
 [![skills.sh](https://img.shields.io/badge/skills.sh-cli-000000.svg)](https://skills.sh/docs)
 
 <br />
 
-**[Explore Skills](#skill-catalog)** · **[Get Started](#quick-start)** · **[Contribute](CONTRIBUTING.md)**
+**[Explore Skills](#-skill-catalog)** · **[Install in 30 Seconds](#-quick-start)** · **[Contribute](CONTRIBUTING.md)**
 
 <br />
 
@@ -30,169 +31,159 @@
 
 ---
 
-## 💡 The Problem
+## Why This Exists
 
-You're a **solo founder**, **indie hacker**, or **one-person DevOps team**. You need to:
+Install these skills and your agent gains expert-level knowledge of:
 
-- Set up CI/CD pipelines across 5 different platforms
-- Harden your Linux servers (but you forgot the sysctl parameters)
-- Write that Terraform module for the 47th time
-- Remember how CloudTrail works... again
-- Configure Kubernetes security contexts properly
-- Actually understand what SOC2 needs
-
-**You can't remember everything. You shouldn't have to.**
-
----
-
-## 🚀 The Solution
-
-This repo is a **comprehensive knowledge base** designed to be loaded into AI agents. It's your **DevOps second brain** — battle-tested scripts, production-ready configs, and expert knowledge organized using the [Agent Skills](https://agentskills.io) format. You can install them with the [skills.sh](https://skills.sh/docs) CLI (`npx skills add`, [CLI docs](https://skills.sh/docs/cli), [FAQ](https://skills.sh/docs/faq)) alongside cloning this repository:
-
-| Domain | What You Get |
-|--------|--------------|
-| 🔧 **DevOps** | CI/CD, containers, K8s, observability, release management |
-| 🔒 **Security** | Scanning, secrets, hardening, network security, incident response |
-| ☁️ **Infrastructure** | AWS, Azure, GCP, servers, networking, databases, storage |
-| 🤖 **AI & Platforms** | Agent infrastructure, local LLM ops, and modern app platforms |
-| 📋 **Compliance** | SOC2, HIPAA, GDPR, PCI-DSS, governance, auditing |
+| Domain | Skills | What Your Agent Learns |
+|--------|--------|----------------------|
+| 🔧 **DevOps** | 40+ | CI/CD pipelines, K8s ops, observability, release strategies, platform engineering |
+| 🔒 **Security** | 35+ | Vulnerability scanning, secrets management, hardening, AI agent security, MCP security |
+| ☁️ **Infrastructure** | 65+ | AWS, Azure, GCP, Cloudflare, databases, networking, GPU clusters, local AI |
+| 🤖 **AI Engineering** | 20+ | LLMOps, agent evals, RAG infrastructure, inference scaling, coding agent guardrails |
+| 📋 **Compliance** | 20+ | SOC2, HIPAA, GDPR, PCI-DSS, policy-as-code, auditing |
+| 💻 **IT Operations** | 5+ | Device management, identity/SSO, SaaS security, troubleshooting |
 
 ---
 
-## ✨ What's Inside
+## 30-Second Install
 
-This isn't just documentation. Each skill includes:
+```bash
+# Install all skills to Claude Code, Cursor, Codex, or any supported agent
+npx skills add bagelhole/DevOps-Security-Agent-Skills
+
+# Install specific skills
+npx skills add bagelhole/DevOps-Security-Agent-Skills --skill kubernetes-ops --skill hashicorp-vault -a cursor -y
+
+# Or clone directly
+git clone https://github.com/bagelhole/DevOps-Security-Agent-Skills.git ~/.skills/devops-security
+```
+
+Works with **Claude Code**, **Cursor**, **Codex**, **OpenCode**, **Cline**, and [many more](https://github.com/vercel-labs/skills#supported-agents).
+
+---
+
+## What Makes This Different
+
+Most "awesome lists" give you links. This repo gives your AI agent **production-ready knowledge** it can act on:
+
+```yaml
+# Every skill includes real, copy-pasteable configs like this:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:1.0.0
+        resources:
+          requests: { memory: "128Mi", cpu: "100m" }
+          limits: { memory: "256Mi", cpu: "500m" }
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+```
+
+### What's in Each Skill
 
 ```
 skill/
-├── SKILL.md          # AI-readable instructions & knowledge
-├── scripts/          # Ready-to-run automation scripts
-├── references/       # Deep-dive guides & cheatsheets  
-└── assets/           # Config templates & examples
-```
-
-### 🎯 Real Examples
-
-**Need to debug a crashing pod?**
-```bash
-./devops/orchestration/kubernetes-ops/scripts/pod-debug.sh my-pod
-```
-
-**Hardening a fresh Linux server?**
-```bash
-./security/hardening/linux-hardening/scripts/harden-system.sh --apply
-```
-
-**Setting up Vault from scratch?**
-```bash
-./security/secrets/hashicorp-vault/scripts/vault-init.sh
-```
-
-**Collecting evidence during an incident?**
-```bash
-./security/operations/incident-response/scripts/collect-evidence.sh INC-2024-001
+├── SKILL.md          # 250-400+ lines of expert knowledge
+│   ├── When to Use   # Decision guidance
+│   ├── Prerequisites # What you need
+│   ├── Real Configs  # Copy-pasteable YAML, JSON, HCL, Bash
+│   ├── CLI Commands  # Exact commands to run
+│   ├── Troubleshooting # Common issues + fixes
+│   └── Related Skills  # Cross-references
+├── scripts/          # Ready-to-run automation
+├── references/       # Deep-dive guides
+└── assets/           # Config templates
 ```
 
 ---
 
-## 🧠 How It Works
+## Hot Topics (March 2026)
 
-[Agent Skills](https://agentskills.io) is an open format for extending AI agent capabilities. Here's the flow:
+Skills you won't find in other repos:
+
+| Skill | Why It's Hot |
+|-------|-------------|
+| [**MCP Server Security**](security/ai/mcp-server-security/) | MCP is everywhere — secure your tool servers |
+| [**AI Coding Agent Guardrails**](security/ai/ai-coding-agent-guardrails/) | Safe Claude Code/Cursor/Codex usage for teams |
+| [**eBPF Observability**](devops/observability/ebpf-observability/) | Kernel-level monitoring with Cilium & Tetragon |
+| [**Platform Engineering**](devops/platforms/platform-engineering/) | Build internal developer platforms with Backstage |
+| [**Supply Chain Attack Response**](security/scanning/supply-chain-attack-response/) | Detect & respond to compromised dependencies |
+| [**OpenTofu Migration**](infrastructure/iac/opentofu-migration/) | Migrate from Terraform to the open-source fork |
+| [**Dev Containers & Nix**](devops/developer-experience/devcontainers-nix/) | Reproducible dev environments for teams |
+| [**Agent Evals**](devops/ai/agent-evals/) | CI/CD gates for AI agent quality & safety |
+
+---
+
+## How It Works
+
+[Agent Skills](https://agentskills.io) is an open format for extending AI agents. Each `SKILL.md` has YAML frontmatter that agents load for matching, and detailed instructions that load only when activated:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. DISCOVER        2. MATCH           3. ACTIVATE              │
-│                                                                 │
-│  Agent scans     →  User asks about  →  Agent reads full       │
-│  skill folders      Kubernetes          SKILL.md + runs        │
-│  at startup         debugging           scripts as needed      │
-└─────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│  1. DISCOVER         2. MATCH            3. ACTIVATE           │
+│                                                                │
+│  Agent scans      →  User asks about  →  Agent reads full     │
+│  skill folders       Kubernetes          SKILL.md + runs      │
+│  at startup          debugging           scripts as needed    │
+└────────────────────────────────────────────────────────────────┘
 ```
-
-Each `SKILL.md` has YAML frontmatter (name + description) that agents load at startup for matching, and markdown instructions that get loaded only when the skill is activated. This keeps context usage efficient.
-
-📖 **Full spec:** [agentskills.io/specification](https://agentskills.io/specification)
 
 ---
 
 ## 🏃 Quick Start
 
-### 1. Install with the skills CLI ([skills.sh](https://skills.sh/docs))
+### Option 1: skills.sh CLI (Recommended)
 
-The [skills](https://github.com/vercel-labs/skills) CLI discovers every `SKILL.md` in this repository (including nested paths) and can symlink or copy them into your agent’s skills directory—**Cursor**, **Claude Code**, **Codex**, **OpenCode**, and [many others](https://github.com/vercel-labs/skills#supported-agents) are supported. See the [CLI reference](https://skills.sh/docs/cli) and [FAQ](https://skills.sh/docs/faq) for details.
+The [skills](https://github.com/vercel-labs/skills) CLI discovers every `SKILL.md` in this repository and installs them into your agent's skills directory. See [CLI docs](https://skills.sh/docs/cli) and [FAQ](https://skills.sh/docs/faq).
 
 ```bash
-# Install from GitHub (use your fork’s owner/repo if different)
+# Install all skills
 npx skills add bagelhole/DevOps-Security-Agent-Skills
 
-# List skills without installing
+# List available skills
 npx skills add bagelhole/DevOps-Security-Agent-Skills --list
 
-# Install specific skills to Cursor, non-interactively
+# Install specific skills to a specific agent
 npx skills add bagelhole/DevOps-Security-Agent-Skills --skill kubernetes-ops --skill hashicorp-vault -a cursor -y
 
-# Global install (~/) instead of the current project
+# Global install
 npx skills add bagelhole/DevOps-Security-Agent-Skills -g -y
 
-# Install a single skill by path in the repo
+# Install a single skill by URL
 npx skills add https://github.com/bagelhole/DevOps-Security-Agent-Skills/tree/main/devops/orchestration/kubernetes-ops
 ```
 
-You can also install from a **local clone** of this repo: `npx skills add . --list` from the repository root.
+Install from a **local clone**: `npx skills add . --list` from the repo root.
 
-### 2. Download the Skills (clone or submodule)
+### Option 2: Clone or Submodule
 
 ```bash
-# Clone to your skills directory
+# Clone
 git clone https://github.com/bagelhole/DevOps-Security-Agent-Skills.git ~/.skills/devops-security
 
-# Or add as a submodule to your project
+# Or add as a submodule
 git submodule add https://github.com/bagelhole/DevOps-Security-Agent-Skills.git .skills/devops-security
 ```
 
-### 3. Integrate with Your Agent
+### Option 3: For Humans
 
-**Filesystem-based agents** (Cursor, Claude with computer use, Cline, etc.) are the easiest — the agent can read skills directly:
-
-```bash
-# Agent reads skill when needed
-cat ~/.skills/devops-security/devops/orchestration/kubernetes-ops/SKILL.md
-```
-
-**Tool-based agents** need skills injected into the system prompt. Use the [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref) CLI:
-
-```bash
-# Generate XML for your agent's system prompt
-skills-ref to-prompt ~/.skills/devops-security/devops/ci-cd/*
-
-# Output:
-# <available_skills>
-#   <skill>
-#     <name>github-actions</name>
-#     <description>Build, test, and deploy with GitHub Actions workflows...</description>
-#     <location>~/.skills/devops-security/devops/ci-cd/github-actions/SKILL.md</location>
-#   </skill>
-#   ...
-# </available_skills>
-```
-
-### 4. Validate Skills (Optional)
-
-```bash
-# Check skill format is correct
-skills-ref validate ~/.skills/devops-security/security/secrets/hashicorp-vault
-```
-
-### For Humans
-
-No agent? No problem. Browse the skills, copy the scripts, use the configs. It's MIT licensed — go wild.
+No agent? No problem. Browse the skills, copy the configs, run the scripts. MIT licensed — go wild.
 
 ---
 
 ## 📚 Skill Catalog
 
-<details>
-<summary><b>🔧 DevOps</b></summary>
+<details open>
+<summary><b>🔧 DevOps (40+ skills)</b></summary>
 
 ### CI/CD
 | Skill | Description |
@@ -226,6 +217,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [prometheus-grafana](devops/observability/prometheus-grafana/) | Metrics and dashboards |
 | [opentelemetry](devops/observability/opentelemetry/) | Vendor-neutral traces, metrics, and logs |
+| [ebpf-observability](devops/observability/ebpf-observability/) | Kernel-level observability with Cilium, Tetragon, and bpftrace |
 | [elk-stack](devops/observability/elk-stack/) | Elasticsearch, Logstash, Kibana |
 | [loki-logging](devops/observability/loki-logging/) | Grafana Loki log aggregation |
 | [datadog](devops/observability/datadog/) | Datadog monitoring and APM |
@@ -238,12 +230,22 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [agent-observability](devops/ai/agent-observability/) | Tracing, latency, token, and cost telemetry for agents |
 | [agent-evals](devops/ai/agent-evals/) | Automated regression and safety eval suites for agents |
 | [llm-cost-optimization](devops/ai/llm-cost-optimization/) | Cut LLM API costs with caching, batching, model routing, and self-hosting |
-| [llm-caching](devops/ai/llm-caching/) | Exact and semantic caching layers to reduce API calls by 30–70% |
+| [llm-caching](devops/ai/llm-caching/) | Exact and semantic caching layers to reduce API calls by 30-70% |
 | [ai-pipeline-orchestration](devops/ai/ai-pipeline-orchestration/) | Orchestrate RAG ingestion, training, and batch inference with Prefect/Airflow |
-| [llmops-platform-engineering](devops/ai/llmops-platform-engineering/) | Build enterprise LLMOps platforms with evaluation gates, promotions, rollback, and governance |
-| [model-registry-governance](devops/ai/model-registry-governance/) | Define model metadata, approvals, lifecycle policy, and auditable promotion controls |
-| [rag-observability-evals](devops/ai/rag-observability-evals/) | Measure retrieval quality, groundedness, hallucination risk, and RAG regressions continuously |
-| [ai-sre-incident-response](devops/ai/ai-sre-incident-response/) | AI-specific SRE playbooks for model outages, quality regressions, safety incidents, and spend spikes |
+| [llmops-platform-engineering](devops/ai/llmops-platform-engineering/) | Build enterprise LLMOps platforms with evaluation gates, promotions, and governance |
+| [model-registry-governance](devops/ai/model-registry-governance/) | Model metadata, approvals, lifecycle policy, and auditable promotion controls |
+| [rag-observability-evals](devops/ai/rag-observability-evals/) | Measure retrieval quality, groundedness, and RAG regressions continuously |
+| [ai-sre-incident-response](devops/ai/ai-sre-incident-response/) | AI-specific SRE playbooks for model outages, quality regressions, and spend spikes |
+
+### Platform Engineering
+| Skill | Description |
+|-------|-------------|
+| [platform-engineering](devops/platforms/platform-engineering/) | Build internal developer platforms with Backstage, Crossplane, and golden paths |
+
+### Developer Experience
+| Skill | Description |
+|-------|-------------|
+| [devcontainers-nix](devops/developer-experience/devcontainers-nix/) | Reproducible dev environments with Dev Containers, Nix, and Devbox |
 
 ### Release Management
 | Skill | Description |
@@ -256,7 +258,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 </details>
 
 <details>
-<summary><b>🔒 Security</b></summary>
+<summary><b>🔒 Security (35+ skills)</b></summary>
 
 ### Scanning
 | Skill | Description |
@@ -267,6 +269,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [dependency-scanning](security/scanning/dependency-scanning/) | Snyk, Dependabot |
 | [container-scanning](security/scanning/container-scanning/) | Image vulnerability scanning |
 | [sbom-supply-chain](security/scanning/sbom-supply-chain/) | SBOM generation, signing, and provenance verification |
+| [supply-chain-attack-response](security/scanning/supply-chain-attack-response/) | Detect, respond to, and prevent software supply chain attacks |
 
 ### Secrets Management
 | Skill | Description |
@@ -285,7 +288,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [container-hardening](security/hardening/container-hardening/) | Secure Docker/K8s configs |
 | [kubernetes-hardening](security/hardening/kubernetes-hardening/) | K8s security contexts and policies |
 | [cis-benchmarks](security/hardening/cis-benchmarks/) | CIS benchmark auditing |
-| [openclaw-deployment-hardening](security/hardening/openclaw-deployment-hardening/) | OpenClaw CI/CD, container, and runtime hardening guardrails |
+| [openclaw-deployment-hardening](security/hardening/openclaw-deployment-hardening/) | OpenClaw CI/CD, container, and runtime hardening |
 
 ### Network Security
 | Skill | Description |
@@ -301,7 +304,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [incident-response](security/operations/incident-response/) | IR playbooks and evidence collection |
 | [threat-modeling](security/operations/threat-modeling/) | STRIDE methodology |
-| [penetration-testing](security/operations/penetration-testing/) | Basic pentesting |
+| [penetration-testing](security/operations/penetration-testing/) | Authorized security testing |
 | [security-automation](security/operations/security-automation/) | Security workflow automation |
 
 ### AI Security
@@ -309,15 +312,17 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 |-------|-------------|
 | [ai-agent-security](security/ai/ai-agent-security/) | Defend agents against injection, tool abuse, and exfiltration |
 | [llm-app-security](security/ai/llm-app-security/) | Harden LLM app inputs, outputs, and tenant isolation |
-| [ai-security-hardening](security/ai/ai-security-hardening/) | Harden LLM deployments against prompt injection, model theft, and data exfiltration |
-| [prompt-injection-defense](security/ai/prompt-injection-defense/) | Defend against direct/indirect prompt injection with isolation, tool controls, and output validation |
-| [ai-red-teaming](security/ai/ai-red-teaming/) | Run adversarial AI red team programs for jailbreaks, exfiltration, and tool abuse resilience |
-| [model-supply-chain-security](security/ai/model-supply-chain-security/) | Protect model artifacts with signing, provenance, SBOM workflows, and trusted promotion policies |
+| [mcp-server-security](security/ai/mcp-server-security/) | Secure MCP servers with auth, tool authorization, and audit logging |
+| [ai-coding-agent-guardrails](security/ai/ai-coding-agent-guardrails/) | Safe Claude Code/Cursor/Codex usage with permission boundaries |
+| [ai-security-hardening](security/ai/ai-security-hardening/) | Harden LLM deployments against prompt injection and model theft |
+| [prompt-injection-defense](security/ai/prompt-injection-defense/) | Multi-layer prompt injection defense with detection code |
+| [ai-red-teaming](security/ai/ai-red-teaming/) | Adversarial AI red team programs and testing frameworks |
+| [model-supply-chain-security](security/ai/model-supply-chain-security/) | Model signing, provenance, and trusted promotion policies |
 
 </details>
 
 <details>
-<summary><b>☁️ Infrastructure</b></summary>
+<summary><b>☁️ Infrastructure (65+ skills)</b></summary>
 
 ### AWS
 | Skill | Description |
@@ -362,6 +367,11 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [gcp-cloud-sql](infrastructure/cloud-gcp/gcp-cloud-sql/) | Databases |
 | [gcp-networking](infrastructure/cloud-gcp/gcp-networking/) | VPCs and firewall |
 
+### IaC
+| Skill | Description |
+|-------|-------------|
+| [opentofu-migration](infrastructure/iac/opentofu-migration/) | Migrate from Terraform to the open-source OpenTofu fork |
+
 ### Server Management
 | Skill | Description |
 |-------|-------------|
@@ -371,7 +381,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [user-management](infrastructure/servers/user-management/) | Users, groups, sudo |
 | [systemd-services](infrastructure/servers/systemd-services/) | Services and timers |
 | [performance-tuning](infrastructure/servers/performance-tuning/) | System optimization |
-| [gpu-server-management](infrastructure/servers/gpu-server-management/) | NVIDIA GPU driver setup, MIG partitioning, DCGM monitoring for AI workloads |
+| [gpu-server-management](infrastructure/servers/gpu-server-management/) | NVIDIA GPU driver setup, MIG partitioning, DCGM monitoring |
 
 ### Networking
 | Skill | Description |
@@ -381,8 +391,8 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [cdn-setup](infrastructure/networking/cdn-setup/) | CloudFront, Cloudflare |
 | [reverse-proxy](infrastructure/networking/reverse-proxy/) | nginx, Traefik |
 | [service-mesh](infrastructure/networking/service-mesh/) | Istio, Linkerd |
-| [llm-gateway](infrastructure/networking/llm-gateway/) | Unified LLM API gateway with routing, rate limiting, virtual keys, and semantic caching |
-| [ai-inference-service-mesh](infrastructure/networking/ai-inference-service-mesh/) | Service mesh patterns for mTLS, canary inference routing, and resilient AI east-west traffic |
+| [llm-gateway](infrastructure/networking/llm-gateway/) | Unified LLM API gateway with routing, rate limiting, and semantic caching |
+| [ai-inference-service-mesh](infrastructure/networking/ai-inference-service-mesh/) | Service mesh for mTLS, canary inference routing, and resilient AI traffic |
 
 ### Databases
 | Skill | Description |
@@ -393,7 +403,7 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 | [mongodb](infrastructure/databases/mongodb/) | MongoDB clusters |
 | [redis](infrastructure/databases/redis/) | Redis caching |
 | [database-backups](infrastructure/databases/database-backups/) | Backup strategies |
-| [vector-database-ops](infrastructure/databases/vector-database-ops/) | Qdrant, Weaviate, and pgvector for production AI search and RAG workloads |
+| [vector-database-ops](infrastructure/databases/vector-database-ops/) | Qdrant, Weaviate, and pgvector for AI search and RAG |
 
 ### Storage
 | Skill | Description |
@@ -413,26 +423,29 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 ### Local AI Infrastructure
 | Skill | Description |
 |-------|-------------|
-| [ollama-stack](infrastructure/local-ai/ollama-stack/) | Private local inference stack with Ollama |
+| [ollama-stack](infrastructure/local-ai/ollama-stack/) | Private local inference stack with Ollama and Open WebUI |
 | [mac-mini-llm-lab](infrastructure/local-ai/mac-mini-llm-lab/) | Mac mini setup for always-on local LLM serving |
-| [openclaw-local-mac-mini](infrastructure/local-ai/openclaw-local-mac-mini/) | OpenClaw setup for local development and Mac mini hosting |
-| [openclaw-security-hardening](infrastructure/local-ai/openclaw-security-hardening/) | OpenClaw host, auth, secrets, and network hardening for self-hosted deployments |
-| [vllm-server](infrastructure/local-ai/vllm-server/) | High-throughput LLM serving with vLLM — PagedAttention, tensor parallelism, OpenAI API |
-| [llm-inference-scaling](infrastructure/local-ai/llm-inference-scaling/) | Auto-scale LLM inference clusters on Kubernetes with KEDA and GPU-aware scheduling |
-| [rag-infrastructure](infrastructure/local-ai/rag-infrastructure/) | Production RAG with vector stores, hybrid search, embedding pipelines, and reranking |
-| [llm-fine-tuning](infrastructure/local-ai/llm-fine-tuning/) | QLoRA and full fine-tuning with Axolotl, DeepSpeed, and DPO alignment on GPU clusters |
-| [gpu-kubernetes-operations](infrastructure/local-ai/gpu-kubernetes-operations/) | Run GPU Kubernetes clusters with MIG, autoscaling, node health checks, and AI cost controls |
-| [multi-tenant-llm-hosting](infrastructure/local-ai/multi-tenant-llm-hosting/) | Secure multi-tenant LLM hosting with quotas, isolation boundaries, and per-tenant billing controls |
+| [openclaw-local-mac-mini](infrastructure/local-ai/openclaw-local-mac-mini/) | OpenClaw local development and Mac mini hosting |
+| [openclaw-security-hardening](infrastructure/local-ai/openclaw-security-hardening/) | OpenClaw host, auth, secrets, and network hardening |
+| [vllm-server](infrastructure/local-ai/vllm-server/) | High-throughput LLM serving with vLLM and PagedAttention |
+| [llm-inference-scaling](infrastructure/local-ai/llm-inference-scaling/) | Auto-scale LLM inference on Kubernetes with KEDA |
+| [rag-infrastructure](infrastructure/local-ai/rag-infrastructure/) | Production RAG with vector stores, hybrid search, and reranking |
+| [llm-fine-tuning](infrastructure/local-ai/llm-fine-tuning/) | QLoRA and full fine-tuning with Axolotl and DeepSpeed |
+| [gpu-kubernetes-operations](infrastructure/local-ai/gpu-kubernetes-operations/) | GPU Kubernetes with MIG, autoscaling, and AI cost controls |
+| [multi-tenant-llm-hosting](infrastructure/local-ai/multi-tenant-llm-hosting/) | Multi-tenant LLM hosting with quotas and isolation |
 
 ### IT Operations
 | Skill | Description |
 |-------|-------------|
 | [startup-it-troubleshooting](infrastructure/it/startup-it-troubleshooting/) | Practical IT troubleshooting for small teams |
+| [mdm-device-management](infrastructure/it/mdm-device-management/) | Manage and secure company devices with Fleet, Jamf, or Intune |
+| [identity-access-management](infrastructure/it/identity-access-management/) | SSO, SCIM provisioning, and MFA with Google Workspace or Okta |
+| [saas-security-posture](infrastructure/it/saas-security-posture/) | Audit and harden your SaaS stack (GitHub, Slack, Google Workspace) |
 
 </details>
 
 <details>
-<summary><b>📋 Compliance</b></summary>
+<summary><b>📋 Compliance (20+ skills)</b></summary>
 
 ### Frameworks
 | Skill | Description |
@@ -475,21 +488,17 @@ No agent? No problem. Browse the skills, copy the scripts, use the configs. It's
 
 ## 🤝 Contributing
 
-Found a bug? Want to add a skill? PRs are welcome!
+Found a gap? Want to add a skill? PRs are welcome!
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-## ⭐ Support
-
-If this helped you ship faster, **star this repo** — it helps others find it too.
-
-Built with ☕ by [Toby Miller](https://github.com/bagelhole)
-
----
-
 <div align="center">
+
+### If this made your agent smarter, **[star this repo](https://github.com/bagelhole/DevOps-Security-Agent-Skills)** — it helps others find it.
+
+Built by [Toby Miller](https://github.com/bagelhole)
 
 **[⬆ Back to Top](#-devops--security-agent-skills)**
 

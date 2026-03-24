@@ -9,88 +9,477 @@ metadata:
 
 # Runbook Creation
 
-Create effective operational runbooks and procedures.
+Create effective operational runbooks, standard operating procedures, and
+troubleshooting guides that any on-call engineer can follow under pressure.
 
-## Runbook Structure
+## Runbook Template — Full Structure
 
-```markdown
-# Runbook: [Service/Process Name]
+````markdown
+# Runbook: [Service / Process Name]
+
+**Owner:** [Team or individual]
+**Last Reviewed:** YYYY-MM-DD
+**Version:** X.Y
+**Severity if unavailable:** SEV[1-4]
+
+---
 
 ## Overview
-Brief description of the service and runbook purpose.
+
+Brief description of the service, why this runbook exists, and when to
+use it.
 
 ## Prerequisites
-- Required access
-- Tools needed
-- Knowledge required
+
+- [ ] Required access / IAM role: [details]
+- [ ] Tools installed: [kubectl, aws-cli, psql, etc.]
+- [ ] VPN connected to [environment]
+- [ ] Communication channel open: [Slack #channel]
 
 ## Procedure
-Step-by-step instructions with commands.
 
-## Verification
-How to confirm success.
+### Step 1 — [Action Name]
 
-## Rollback
-Steps to undo if needed.
+[Explanation of what this step does and why.]
 
-## Escalation
-When and how to escalate.
-
-## Related Runbooks
-Links to related procedures.
+```bash
+# command here
 ```
 
-## Example Runbook
+**Expected output:** [describe what success looks like]
 
-```markdown
-# Runbook: Database Failover
+### Step 2 — [Action Name]
+
+```bash
+# command here
+```
+
+**Expected output:** [description]
+
+*(Continue with numbered steps...)*
+
+## Verification
+
+How to confirm the procedure succeeded:
+
+- [ ] [Check 1 — e.g., health endpoint returns 200]
+- [ ] [Check 2 — e.g., no errors in logs for 5 minutes]
+- [ ] [Check 3 — e.g., metrics return to baseline]
+
+## Rollback
+
+If the procedure fails or causes unexpected issues:
+
+### Rollback Step 1
+```bash
+# rollback command
+```
+
+### Rollback Step 2
+```bash
+# rollback command
+```
+
+## Troubleshooting
+
+| Symptom | Likely Cause | Resolution |
+|---------|-------------|------------|
+| [symptom 1] | [cause] | [fix] |
+| [symptom 2] | [cause] | [fix] |
+
+## Escalation
+
+If unresolved after [X] minutes:
+- **Primary:** @[team-lead] — [phone/Slack]
+- **Secondary:** @[manager] — [phone/Slack]
+
+## Related Runbooks
+
+- [Link to related runbook 1]
+- [Link to related runbook 2]
+
+## Change Log
+
+| Date | Author | Change |
+|------|--------|--------|
+| YYYY-MM-DD | [Name] | Initial version |
+````
+
+## Example Runbook — Database Failover
+
+````markdown
+# Runbook: PostgreSQL Database Failover
+
+**Owner:** Platform / DBA team
+**Last Reviewed:** 2025-06-15
+**Version:** 2.1
+**Severity if unavailable:** SEV1
+
+---
 
 ## Overview
-Procedure to failover PostgreSQL to replica.
+
+Failover the primary PostgreSQL instance to the synchronous replica when
+the primary is unreachable or degraded. This runbook covers both planned
+(maintenance) and unplanned (emergency) failover.
 
 ## Prerequisites
-- [ ] DBA access to primary and replica
-- [ ] VPN connected
+
+- [ ] DBA or SRE-level access to primary and replica hosts
+- [ ] `psql` client installed (v14+)
+- [ ] VPN connected to production network
 - [ ] Slack channel #db-ops open
+- [ ] Confirm replica is in sync: replication lag < 1 MB
 
 ## Procedure
 
-### 1. Verify Replica Status
-\`\`\`bash
-psql -h replica -c "SELECT pg_is_in_recovery();"
-# Should return 't'
-\`\`\`
+### Step 1 — Verify Replica Health
 
-### 2. Stop Application Writes
-\`\`\`bash
-kubectl scale deployment app --replicas=0
-\`\`\`
+```bash
+psql -h replica.db.internal -U dba -d postgres -c \
+  "SELECT pg_is_in_recovery(), pg_last_wal_replay_lsn();"
+```
 
-### 3. Promote Replica
-\`\`\`bash
-psql -h replica -c "SELECT pg_promote();"
-\`\`\`
+**Expected output:** `pg_is_in_recovery = t`, LSN advancing.
 
-### 4. Update DNS
-\`\`\`bash
-aws route53 change-resource-record-sets ...
-\`\`\`
+### Step 2 — Stop Application Writes
+
+```bash
+kubectl scale deployment api-server --replicas=0 -n production
+kubectl scale deployment worker --replicas=0 -n production
+```
+
+**Expected output:** Deployments scaled to 0 pods.
+
+### Step 3 — Confirm Write Quiesce
+
+```bash
+psql -h primary.db.internal -U dba -d postgres -c \
+  "SELECT count(*) FROM pg_stat_activity WHERE state = 'active' AND query !~ 'pg_stat';"
+```
+
+**Expected output:** Count = 0 (no active queries).
+
+### Step 4 — Promote Replica
+
+```bash
+psql -h replica.db.internal -U dba -d postgres -c "SELECT pg_promote();"
+```
+
+Wait up to 30 seconds, then confirm:
+
+```bash
+psql -h replica.db.internal -U dba -d postgres -c "SELECT pg_is_in_recovery();"
+```
+
+**Expected output:** `pg_is_in_recovery = f` (no longer a replica).
+
+### Step 5 — Update DNS
+
+```bash
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z1234567890 \
+  --change-batch '{
+    "Changes": [{
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "db.internal.example.com",
+        "Type": "CNAME",
+        "TTL": 60,
+        "ResourceRecords": [{"Value": "replica.db.internal"}]
+      }
+    }]
+  }'
+```
+
+### Step 6 — Restart Application
+
+```bash
+kubectl scale deployment api-server --replicas=6 -n production
+kubectl scale deployment worker --replicas=4 -n production
+```
 
 ## Verification
-- [ ] Application connects to new primary
-- [ ] No replication lag errors
-- [ ] Transactions completing
+
+- [ ] `psql -h db.internal.example.com -c "SELECT 1;"` returns successfully
+- [ ] Application logs show successful DB connections (no errors for 5 min)
+- [ ] Transaction throughput returns to baseline on Grafana dashboard
+- [ ] No replication-lag alerts firing
+
+## Rollback
+
+If the promoted replica has issues, restore from the most recent backup:
+
+```bash
+# Restore latest automated snapshot (RDS example)
+aws rds restore-db-instance-from-db-snapshot \
+  --db-instance-identifier prod-db-restored \
+  --db-snapshot-identifier prod-db-latest-snapshot
+```
 
 ## Escalation
-If issues persist after 15 minutes, escalate to:
-- Primary: @dba-lead
-- Secondary: @platform-oncall
+
+If unresolved after 15 minutes:
+- **Primary:** @dba-lead — +1-555-0101
+- **Secondary:** @platform-oncall — +1-555-0102
+````
+
+## Automation Scripts for Common Operations
+
+### Service Health Check
+
+```bash
+#!/usr/bin/env bash
+# health-check.sh — Check health of critical services
+set -euo pipefail
+
+SERVICES=(
+  "https://api.example.com/healthz"
+  "https://app.example.com/healthz"
+  "https://admin.example.com/healthz"
+)
+
+EXIT_CODE=0
+
+for url in "${SERVICES[@]}"; do
+  HTTP_CODE=$(curl -so /dev/null -w '%{http_code}' --max-time 5 "$url" 2>/dev/null || echo "000")
+  if [ "$HTTP_CODE" -eq 200 ]; then
+    printf "  OK    %s\n" "$url"
+  else
+    printf "  FAIL  %s (HTTP %s)\n" "$url" "$HTTP_CODE"
+    EXIT_CODE=1
+  fi
+done
+
+exit $EXIT_CODE
+```
+
+### Log Collection for Incident Investigation
+
+```bash
+#!/usr/bin/env bash
+# collect-logs.sh — Gather logs from multiple sources for incident review
+set -euo pipefail
+
+INCIDENT_ID="${1:?Usage: collect-logs.sh <incident-id>}"
+OUTDIR="/tmp/incident-${INCIDENT_ID}"
+mkdir -p "$OUTDIR"
+
+echo "Collecting logs for incident $INCIDENT_ID..."
+
+# Kubernetes pod logs (last 30 min)
+kubectl logs -l app=api-server -n production --since=30m \
+  > "${OUTDIR}/api-server-pods.log" 2>&1
+
+# CloudWatch Logs (last 30 min)
+aws logs filter-log-events \
+  --log-group-name /ecs/production/api \
+  --start-time "$(date -d '30 minutes ago' +%s)000" \
+  --output text > "${OUTDIR}/cloudwatch-api.log" 2>&1
+
+# Database slow query log
+psql -h db.internal -U dba -d postgres -c \
+  "SELECT * FROM pg_stat_activity WHERE state != 'idle' ORDER BY query_start;" \
+  > "${OUTDIR}/db-active-queries.log" 2>&1
+
+# System resource snapshot
+kubectl top pods -n production > "${OUTDIR}/pod-resources.log" 2>&1
+
+echo "Logs saved to $OUTDIR"
+tar czf "${OUTDIR}.tar.gz" -C /tmp "incident-${INCIDENT_ID}"
+echo "Archive: ${OUTDIR}.tar.gz"
+```
+
+### Certificate Expiry Check
+
+```bash
+#!/usr/bin/env bash
+# cert-check.sh — Warn if TLS certificates expire within 30 days
+set -euo pipefail
+
+DOMAINS=(
+  "api.example.com"
+  "app.example.com"
+  "admin.example.com"
+)
+
+WARN_DAYS=30
+TODAY=$(date +%s)
+EXIT_CODE=0
+
+for domain in "${DOMAINS[@]}"; do
+  EXPIRY=$(echo | openssl s_client -servername "$domain" -connect "${domain}:443" 2>/dev/null \
+    | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+  EXPIRY_EPOCH=$(date -d "$EXPIRY" +%s 2>/dev/null || echo 0)
+  DAYS_LEFT=$(( (EXPIRY_EPOCH - TODAY) / 86400 ))
+
+  if [ "$DAYS_LEFT" -lt "$WARN_DAYS" ]; then
+    printf "  WARN  %s expires in %d days (%s)\n" "$domain" "$DAYS_LEFT" "$EXPIRY"
+    EXIT_CODE=1
+  else
+    printf "  OK    %s — %d days remaining\n" "$domain" "$DAYS_LEFT"
+  fi
+done
+
+exit $EXIT_CODE
+```
+
+### Disk Space Cleanup
+
+```bash
+#!/usr/bin/env bash
+# disk-cleanup.sh — Free disk space on a host
+set -euo pipefail
+
+echo "=== Disk Usage Before ==="
+df -h /
+
+# Remove old journal logs (> 7 days)
+journalctl --vacuum-time=7d 2>/dev/null || true
+
+# Clean Docker artifacts
+docker system prune -f --volumes 2>/dev/null || true
+
+# Remove old log files
+find /var/log -name "*.gz" -mtime +7 -delete 2>/dev/null || true
+find /tmp -type f -mtime +3 -delete 2>/dev/null || true
+
+echo "=== Disk Usage After ==="
+df -h /
+```
+
+## Runbook Review Checklist
+
+Use this checklist every time a runbook is created or updated.
+
+```yaml
+content_review:
+  - [ ] Title clearly identifies the service and operation
+  - [ ] Overview explains WHEN and WHY to use this runbook
+  - [ ] Prerequisites list all required access, tools, and setup
+  - [ ] Every step has a concrete command (no vague instructions)
+  - [ ] Expected output is documented for each step
+  - [ ] Verification section confirms success with specific checks
+  - [ ] Rollback section exists and has been tested
+  - [ ] Escalation contacts are current (names, phones, Slack handles)
+  - [ ] Troubleshooting table covers the top 3-5 known failure modes
+
+usability_review:
+  - [ ] A new team member can follow the runbook without tribal knowledge
+  - [ ] Steps are numbered and sequential (no branching without clear labels)
+  - [ ] Commands can be copy-pasted (no placeholder values without explanation)
+  - [ ] Time estimates included for long-running steps
+  - [ ] No jargon or acronyms used without definition
+
+maintenance_review:
+  - [ ] Owner and last-reviewed date are set
+  - [ ] Version number incremented
+  - [ ] Change log entry added
+  - [ ] Related runbooks section is up to date
+  - [ ] Links to dashboards and docs are valid (not broken)
+```
+
+## Runbook Testing Procedures
+
+```yaml
+testing_strategy:
+  dry_run:
+    frequency: "Every time a runbook is created or substantially edited"
+    method: "Walk through each step in a staging environment"
+    goal: "Verify commands work and output matches documentation"
+
+  peer_review:
+    frequency: "Every edit"
+    method: "Another engineer follows the runbook in staging without help"
+    goal: "Confirm the runbook is self-contained and unambiguous"
+
+  scheduled_validation:
+    frequency: "Quarterly"
+    method: "SRE team picks 5 runbooks at random, executes in staging"
+    goal: "Catch runbooks that have drifted from production reality"
+
+  incident_triggered:
+    trigger: "Any time a runbook is used in a real incident"
+    method: "Post-mortem includes runbook accuracy assessment"
+    goal: "Capture improvements while the experience is fresh"
+
+  automation_testing:
+    method: "CI pipeline validates bash scripts with shellcheck and dry-run"
+    example: |
+      # .github/workflows/runbook-lint.yml
+      name: Lint Runbook Scripts
+      on: [pull_request]
+      jobs:
+        shellcheck:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v4
+            - name: ShellCheck
+              run: |
+                find runbooks/ -name "*.sh" -exec shellcheck {} +
+```
+
+## Versioning Strategy
+
+```yaml
+versioning:
+  storage: "Git repository — one directory per service, one file per runbook"
+  naming: "runbooks/<service>/<operation>.md"
+  branching: "PRs required for all changes; reviewed by service owner"
+
+  version_scheme:
+    format: "MAJOR.MINOR"
+    major_bump: "Procedure changes that alter the steps or their order"
+    minor_bump: "Clarifications, typo fixes, updated contact info"
+
+  directory_layout: |
+    runbooks/
+      api-server/
+        deploy.md
+        rollback.md
+        scale-up.md
+      database/
+        failover.md
+        backup-restore.md
+        vacuum-maintenance.md
+      infrastructure/
+        dns-update.md
+        certificate-renewal.md
+        disk-cleanup.md
+
+  review_requirements:
+    - PR must be approved by the service owner
+    - CI must pass (shellcheck for scripts, markdown lint)
+    - Reviewer confirms they can follow the steps independently
+
+  retention: "Git history serves as full audit trail — never delete old versions"
+```
+
+## Runbook Index Template
+
+Keep a top-level index so engineers can find the right runbook quickly.
+
+```markdown
+# Runbook Index
+
+| Service | Runbook | Severity | Owner | Last Tested |
+|---------|---------|----------|-------|-------------|
+| API Server | [Deploy](api-server/deploy.md) | — | @platform | 2025-05-01 |
+| API Server | [Rollback](api-server/rollback.md) | SEV1 | @platform | 2025-05-01 |
+| Database | [Failover](database/failover.md) | SEV1 | @dba | 2025-04-15 |
+| Database | [Backup Restore](database/backup-restore.md) | SEV2 | @dba | 2025-04-15 |
+| Infra | [DNS Update](infrastructure/dns-update.md) | SEV2 | @sre | 2025-06-01 |
+| Infra | [Cert Renewal](infrastructure/certificate-renewal.md) | SEV3 | @sre | 2025-06-01 |
 ```
 
 ## Best Practices
 
-- Keep procedures simple and clear
-- Include verification steps
-- Test runbooks regularly
-- Version control runbooks
-- Include troubleshooting tips
+- Write runbooks for the engineer at 3 AM — clear, sequential, copy-pasteable
+- Include expected output so the operator knows if a step succeeded
+- Always provide a rollback path; every action should be reversible
+- Test runbooks in staging before they are needed in production
+- Keep runbooks in version control alongside the code they support
+- Assign an owner to every runbook; ownerless runbooks rot fast
+- After every incident, update the relevant runbook with lessons learned
+- Automate repetitive runbook steps into scripts, but keep the runbook as
+  the orchestration guide so operators understand the "why"
