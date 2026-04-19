@@ -1,6 +1,6 @@
 ---
 name: aws-iam
-description: Manage IAM users, roles, and policies. Implement least-privilege access and security best practices. Use when configuring AWS identity and access management.
+description: "Create and attach IAM policies, configure role trust relationships, set up OIDC federation and cross-account access, manage permission boundaries, and audit credentials. Use when configuring AWS permissions, access control, service roles, trust policies, MFA enforcement, or credential management."
 license: MIT
 metadata:
   author: devops-skills
@@ -10,23 +10,6 @@ metadata:
 # AWS IAM
 
 Manage identity and access in AWS with least-privilege policies, roles, federation, and permission boundaries.
-
-## When to Use This Skill
-
-- Creating roles for EC2 instances, Lambda functions, or ECS tasks
-- Writing custom IAM policies with least-privilege access
-- Setting up OIDC federation for GitHub Actions or other CI/CD systems
-- Implementing permission boundaries for delegated administration
-- Auditing access with IAM Access Analyzer and credential reports
-- Configuring cross-account access with assume-role patterns
-- Enforcing MFA and session policies
-
-## Prerequisites
-
-- AWS CLI v2 installed and configured
-- IAM permissions: `iam:*` (or scoped to specific actions for least privilege)
-- For OIDC: ability to create identity providers (`iam:CreateOpenIDConnectProvider`)
-- AWS Organizations access for Service Control Policies (SCPs)
 
 ## IAM Policy Structure
 

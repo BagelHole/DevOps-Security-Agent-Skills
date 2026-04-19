@@ -1,6 +1,6 @@
 ---
 name: soc2-compliance
-description: Implement SOC 2 Trust Services Criteria. Configure security, availability, and processing integrity controls. Use when achieving SOC 2 certification.
+description: "Implement SOC 2 Trust Services Criteria for Type I and Type II audits. Perform gap analysis, generate control policies, map controls to AICPA criteria, and automate audit evidence collection. Use when preparing for SOC 2 certification, compliance audits, configuring security and availability controls, or automating evidence gathering for auditor requests."
 license: MIT
 metadata:
   author: devops-skills
@@ -11,197 +11,13 @@ metadata:
 
 Implement SOC 2 Trust Services Criteria controls, evidence collection, and continuous compliance monitoring for Type I and Type II audits.
 
-## When to Use
+## Implementation Workflow
 
-- Preparing for a SOC 2 Type I or Type II audit
-- Mapping existing controls to Trust Services Criteria
-- Automating evidence collection for auditor requests
-- Building continuous compliance monitoring into CI/CD
-- Onboarding new services and ensuring SOC 2 control coverage
-
-## Trust Services Criteria Detailed Checklist
-
-```yaml
-security_common_criteria:
-  CC1_control_environment:
-    CC1.1: "Management demonstrates commitment to integrity and ethical values"
-    CC1.2: "Board exercises oversight of internal controls"
-    CC1.3: "Management establishes structure, authority, and responsibility"
-    CC1.4: "Commitment to competence - hire and retain qualified personnel"
-    CC1.5: "Individuals are held accountable for internal control responsibilities"
-    evidence:
-      - Code of conduct document
-      - Organizational chart
-      - Job descriptions with security responsibilities
-      - Board meeting minutes discussing security
-      - Background check policy and records
-
-  CC2_communication:
-    CC2.1: "Entity obtains or generates relevant quality information"
-    CC2.2: "Entity internally communicates information including objectives and responsibilities"
-    CC2.3: "Entity communicates with external parties"
-    evidence:
-      - Security awareness training records
-      - Internal security newsletters or updates
-      - Customer-facing security documentation
-      - Status page and incident communication records
-
-  CC3_risk_assessment:
-    CC3.1: "Entity specifies objectives clearly to identify and assess risks"
-    CC3.2: "Entity identifies risks to achievement of objectives"
-    CC3.3: "Entity considers potential for fraud"
-    CC3.4: "Entity identifies and assesses significant changes"
-    evidence:
-      - Annual risk assessment report
-      - Risk register with ratings and treatment plans
-      - Fraud risk assessment documentation
-      - Change management records
-
-  CC4_monitoring:
-    CC4.1: "Entity selects, develops, and performs ongoing/separate evaluations"
-    CC4.2: "Entity evaluates and communicates internal control deficiencies"
-    evidence:
-      - Continuous monitoring dashboard screenshots
-      - Internal audit reports
-      - Vulnerability scan results
-      - Penetration test reports
-
-  CC5_control_activities:
-    CC5.1: "Entity selects and develops control activities to mitigate risks"
-    CC5.2: "Entity selects and develops technology-based controls"
-    CC5.3: "Entity deploys control activities through policies and procedures"
-    evidence:
-      - Information security policy
-      - Access control procedures
-      - Change management procedures
-      - Encryption standards documentation
-
-  CC6_logical_access:
-    CC6.1: "Logical access security over protected information assets"
-    CC6.2: "Prior to access, users are registered and authorized"
-    CC6.3: "Access to data, software, functions, and other IT resources is authorized and modified"
-    CC6.6: "Logical access security measures against threats from outside system boundaries"
-    CC6.7: "Transmission of data between parties is protected"
-    CC6.8: "Controls to prevent or detect unauthorized or malicious software"
-    evidence:
-      - IAM credential report
-      - MFA enforcement configuration
-      - Access review completion records
-      - Firewall and WAF configurations
-      - TLS/encryption configurations
-      - Endpoint protection deployment records
-
-  CC7_system_operations:
-    CC7.1: "Detect anomalies and potential security incidents"
-    CC7.2: "Monitor system components for anomalies"
-    CC7.3: "Evaluate detected events and determine incidents"
-    CC7.4: "Respond to identified security incidents"
-    CC7.5: "Identify and remediate security incidents"
-    evidence:
-      - SIEM alert rules and dashboards
-      - Monitoring configuration (CloudWatch, Datadog, etc.)
-      - Incident response plan
-      - Incident tickets and post-mortems
-
-  CC8_change_management:
-    CC8.1: "Entity authorizes, designs, develops, configures, documents, tests, approves, and implements changes"
-    evidence:
-      - Change management policy
-      - Pull request approval requirements
-      - CI/CD pipeline configurations
-      - Deployment records with approvals
-
-  CC9_risk_mitigation:
-    CC9.1: "Entity identifies, selects, and develops risk mitigation activities"
-    CC9.2: "Entity assesses and manages risks associated with vendors"
-    evidence:
-      - Risk treatment plans
-      - Vendor assessment records
-      - Business associate agreements
-      - Insurance certificates
-
-availability_criteria:
-  A1.1: "System processing capacity and availability are maintained"
-  A1.2: "Environmental protections and recovery measures"
-  A1.3: "Recovery plan procedures to support system availability"
-  evidence:
-    - Uptime SLA documentation
-    - Capacity monitoring dashboards
-    - Disaster recovery plan
-    - DR test results
-    - Backup verification records
-
-processing_integrity_criteria:
-  PI1.1: "Entity obtains or generates, uses, and communicates quality information"
-  evidence:
-    - Input validation procedures
-    - Data processing accuracy checks
-    - Error handling and retry logic documentation
-    - Output reconciliation records
-
-confidentiality_criteria:
-  C1.1: "Entity identifies and maintains confidential information"
-  C1.2: "Entity disposes of confidential information"
-  evidence:
-    - Data classification policy
-    - Encryption configurations
-    - Data retention and destruction policies
-    - Secure disposal records
-
-privacy_criteria:
-  P1-P8: "Privacy notice, choice, collection, use, disclosure, access, quality, monitoring"
-  evidence:
-    - Privacy policy (published)
-    - Consent management records
-    - Data processing inventory
-    - DSAR handling procedures
-```
-
-## Tool Mappings for Control Evidence
-
-```yaml
-control_to_tool_mapping:
-  CC6.1_logical_access:
-    aws:
-      - IAM credential report (aws iam generate-credential-report)
-      - IAM Access Analyzer findings
-      - AWS SSO configuration
-      - GuardDuty findings
-    azure:
-      - Azure AD sign-in logs
-      - Conditional Access policies
-      - PIM role assignments
-    github:
-      - Organization member list and roles
-      - Repository access permissions
-      - Branch protection rules
-    okta:
-      - User status report
-      - MFA enrollment report
-      - Application assignment report
-
-  CC7.2_monitoring:
-    tools:
-      - CloudWatch / Azure Monitor / Cloud Monitoring dashboards
-      - Datadog / New Relic / Grafana alert configurations
-      - SIEM (Splunk, Elastic, Sentinel) saved searches
-      - PagerDuty / OpsGenie escalation policies
-    evidence_format:
-      - Dashboard screenshots with date stamps
-      - Alert rule configuration exports
-      - Incident response records from ticketing system
-
-  CC8.1_change_management:
-    tools:
-      - GitHub/GitLab PR merge requirements
-      - CI/CD pipeline configurations (GitHub Actions, Jenkins)
-      - Terraform plan outputs
-      - Deployment logs
-    evidence_format:
-      - PR with approvals and CI checks
-      - Deployment audit trail
-      - Change advisory board meeting notes (if applicable)
-```
+1. **Gap assessment**: Identify which TSC criteria (CC1–CC9, A1, PI1, C1, P1–P8) have existing controls vs. gaps. Prioritize CC6 (logical access) and CC7 (system operations) — auditors focus here first.
+2. **Control mapping**: For each criteria, map to a specific tool, owner, and evidence artifact. Verify mappings produce actual evidence by running a test collection.
+3. **Evidence automation**: Deploy the collection script below on a monthly schedule. After each run, verify outputs are non-empty and contain expected data.
+4. **Continuous monitoring**: Set up the GitHub Actions workflow to catch drift between audit periods. Review alerts weekly.
+5. **Audit prep**: Follow the timeline below, starting 12 months before the target audit date. For Type I, focus on control design; for Type II, ensure controls operated effectively over the observation period.
 
 ## Evidence Collection Automation
 
@@ -372,15 +188,11 @@ jobs:
           [ "$DETECTOR" != "None" ] || (echo "::error::GuardDuty not enabled" && exit 1)
 ```
 
-## Best Practices
+## Troubleshooting
 
-- Start with a gap assessment to understand current control maturity before engaging an auditor
-- Automate evidence collection to reduce the burden of auditor requests and ensure consistency
-- Map each control to a specific tool, owner, and evidence artifact for traceability
-- Implement continuous monitoring rather than point-in-time checks for Type II readiness
-- Maintain a central evidence repository organized by control criteria
-- Conduct quarterly internal reviews to catch control drift before the audit period
-- Keep policies living documents with version history and annual review dates
-- Train all employees on their role in maintaining SOC 2 controls
-- Use the audit preparation timeline to avoid last-minute scrambling
-- Treat each auditor exception as an improvement opportunity rather than a failure
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Evidence gaps for CC6.1 | IAM credential report not generated regularly | Schedule `aws iam generate-credential-report` monthly; verify CSV is non-empty |
+| Audit finding on CC8.1 | PRs merged without required approvals | Enforce branch protection rules requiring 1+ approvals and CI checks |
+| Type II observation period too short | Started evidence collection late | Begin formal collection 12 months before target audit date |
+| Monitoring gaps for CC7 | Alerts configured but not reviewed | Add weekly alert triage to on-call rotation; track in ticketing system |
