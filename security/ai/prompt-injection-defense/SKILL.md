@@ -1,6 +1,6 @@
 ---
 name: prompt-injection-defense
-description: Defend AI systems against prompt injection and indirect prompt attacks using input controls, tool permissions, output validation, and isolation boundaries.
+description: "Defend AI systems against prompt injection and indirect prompt attacks using input controls, tool permissions, output validation, and isolation boundaries. Use when securing LLM applications, designing RAG pipelines with untrusted documents, hardening agentic workflows, or implementing safety boundaries against adversarial inputs."
 license: MIT
 metadata:
   author: devops-skills
@@ -10,22 +10,6 @@ metadata:
 # Prompt Injection Defense
 
 Mitigate direct and indirect prompt injection across chat apps, agentic workflows, and RAG pipelines.
-
-## When to Use This Skill
-
-Use this skill when:
-- Building or securing any LLM-powered application
-- Designing RAG pipelines that ingest untrusted documents
-- Implementing agentic workflows with tool-calling capabilities
-- Responding to a reported prompt injection vulnerability
-- Performing security reviews of AI-integrated products
-
-## Prerequisites
-
-- Python 3.10+ with `re`, `hashlib`, `json` standard libraries
-- Access to the LLM application source code or configuration
-- Understanding of the application's prompt architecture (system/user/tool boundaries)
-- Test environment with representative user inputs and documents
 
 ## Attack Surface
 
