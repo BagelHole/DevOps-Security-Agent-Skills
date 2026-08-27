@@ -260,6 +260,13 @@ No agent? No problem. Browse the skills, copy the configs, run the scripts. MIT 
 <details>
 <summary><b>🔒 Security (35+ skills)</b></summary>
 
+### Libraries
+| Skill | Description |
+|-------|-------------|
+| [Security-Cards](https://securitycards.rewarelabs.com) | Security Cards are collection of library specific security guidance designed for developers and AI coding agents |
+
+
+
 ### Scanning
 | Skill | Description |
 |-------|-------------|
