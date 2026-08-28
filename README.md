@@ -302,6 +302,7 @@ No agent? No problem. Browse the skills, copy the configs, run the scripts. MIT 
 ### Security Operations
 | Skill | Description |
 |-------|-------------|
+| [hol-guard](security/operations/hol-guard/) | Fail-closed HOL Guard protection for local AI coding agents |
 | [incident-response](security/operations/incident-response/) | IR playbooks and evidence collection |
 | [threat-modeling](security/operations/threat-modeling/) | STRIDE methodology |
 | [penetration-testing](security/operations/penetration-testing/) | Authorized security testing |
