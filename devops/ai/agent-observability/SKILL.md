@@ -750,6 +750,10 @@ response = client.chat.completions.create(
 )
 ```
 
+### Gateway-Level Telemetry
+
+If LLM calls already go through a self-hosted gateway such as Bifrost (see [llm-gateway](../../../infrastructure/networking/llm-gateway/)), the gateway can export request traces over OpenTelemetry (OTLP) and expose a Prometheus `/metrics` endpoint, so calls from services you have not instrumented yet still show up in the same backends.
+
 ---
 
 ## SLO Definition
